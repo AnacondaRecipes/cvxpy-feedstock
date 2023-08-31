@@ -47,7 +47,7 @@ outputs:
       commands:
         {% set tests_to_skip = "_not_a_real_test" %}
         # test sets intentionally too small timelimit, and then fails
-        {% set tests_to_skip = tests_to_skip + " or test_scipy_mi_time_limit_reached " %}   # [aarch64 or ppc64le]
+        {% set tests_to_skip = tests_to_skip + " or test_scipy_mi_time_limit_reached " %}
         - pytest cvxpy/tests -v -k "not ({{ tests_to_skip }})"
         - pip check
 

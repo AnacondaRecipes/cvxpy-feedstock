@@ -77,7 +77,7 @@ outputs:
         - cvxpy
 
 about:
-  home: http://www.cvxpy.org/
+  home: https://www.cvxpy.org/
   license: Apache-2.0
   license_family: Apache
   license_file: LICENSE
@@ -87,7 +87,7 @@ about:
     problems. It allows you to express your problem in a natural way that
     follows the math, rather than in the restrictive standard form required
     by solvers.
-  doc_url: http://www.cvxpy.org/
+  doc_url: https://www.cvxpy.org/
   dev_url: https://github.com/cvxpy/cvxpy
 
 extra:

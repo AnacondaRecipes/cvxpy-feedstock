@@ -61,7 +61,6 @@ outputs:
         - {{ compiler('cxx') }}
       host:
         - python
-        # conda-forge recipe inserts oldest numpy per platform/runtime
         - numpy
         - pip
       run:

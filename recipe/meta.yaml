@@ -63,6 +63,8 @@ outputs:
         - python
         - numpy
         - pip
+        - setuptools
+        - wheel
       run:
         - python
         - {{ pin_compatible('numpy') }}

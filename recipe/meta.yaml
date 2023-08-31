@@ -35,6 +35,7 @@ outputs:
         - scs >=1.1.6
     test:
       requires:
+        - pip
         - pytest
         - cvxopt
       source_files:
@@ -48,6 +49,7 @@ outputs:
         # test sets intentionally too small timelimit, and then fails
         {% set tests_to_skip = tests_to_skip + " or test_scipy_mi_time_limit_reached " %}   # [aarch64 or ppc64le]
         - pytest cvxpy/tests -v -k "not ({{ tests_to_skip }})"
+        - pip check
 
   - name: cvxpy-base
     build:
@@ -72,6 +74,7 @@ outputs:
         - {{ pin_compatible('numpy') }}
         - scipy >=1.1.0
     test:
+      # pip check fails for cvxpy-base due to checking for optional dependencies.
       imports:
         # public interface is defined (see #75) to be the content of
         # https://github.com/cvxpy/cvxpy/blob/master/cvxpy/__init__.py

@@ -26,8 +26,8 @@ requirements:
 outputs:
   - name: cvxpy
     build:
-      # scs missing on Windows
-      skip: true  # [win or s390x]
+      # Windows missing scs
+      skip: true  # [win]
     requirements:
       host:
         - python
@@ -41,7 +41,8 @@ outputs:
       requires:
         - pip
         - pytest
-        - cvxopt
+        # cvxopt required for tests, missing on s390x
+        - cvxopt  # [not s390x]
       source_files:
         - cvxpy/tests
       imports:
@@ -52,7 +53,7 @@ outputs:
         {% set tests_to_skip = "_not_a_real_test" %}
         # test sets intentionally too small timelimit, and then fails
         {% set tests_to_skip = tests_to_skip + " or test_scipy_mi_time_limit_reached " %}
-        - pytest cvxpy/tests -v -k "not ({{ tests_to_skip }})"
+        - pytest cvxpy/tests -v -k "not ({{ tests_to_skip }})"  # [not s390x]
         - pip check
 
   - name: cvxpy-base

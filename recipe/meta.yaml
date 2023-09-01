@@ -11,13 +11,10 @@ source:
 
 build:
   number: 0
+  skip: true  # [py<37]
 
-# Need these up here for conda-smithy to handle them properly.
 requirements:
   build:
-    - python                                 # [build_platform != target_platform]
-    - cross-python_{{ target_platform }}     # [build_platform != target_platform]
-    - numpy                                  # [build_platform != target_platform]
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
   host:
@@ -27,6 +24,9 @@ requirements:
 
 outputs:
   - name: cvxpy
+    build:
+      # Windows missing scs
+      skip: true  # [win]
     requirements:
       host:
         - python
@@ -38,8 +38,10 @@ outputs:
         - scs >=1.1.6
     test:
       requires:
+        - pip
         - pytest
-        - cvxopt
+        # cvxopt required for tests, missing on s390x
+        - cvxopt  # [not s390x]
       source_files:
         - cvxpy/tests
       imports:
@@ -49,39 +51,37 @@ outputs:
       commands:
         {% set tests_to_skip = "_not_a_real_test" %}
         # test sets intentionally too small timelimit, and then fails
-        {% set tests_to_skip = tests_to_skip + " or test_scipy_mi_time_limit_reached " %}   # [aarch64 or ppc64le]
-        - pytest cvxpy/tests -v -k "not ({{ tests_to_skip }})"
+        {% set tests_to_skip = tests_to_skip + " or test_scipy_mi_time_limit_reached " %}
+        - pytest cvxpy/tests -v -k "not ({{ tests_to_skip }})"  # [not s390x]
+        - pip check
 
   - name: cvxpy-base
     build:
       script:
-        - rm $SRC_DIR/pyproject.toml    # [unix]
-        - del %SRC_DIR%\pyproject.toml  # [win]
-        - {{ PYTHON }} -m pip install . --no-deps -vvv
+        - {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vvv
     requirements:
       build:
-        - python                                 # [build_platform != target_platform]
-        - cross-python_{{ target_platform }}     # [build_platform != target_platform]
-        - numpy                                  # [build_platform != target_platform]
         - {{ compiler('c') }}
         - {{ compiler('cxx') }}
       host:
         - python
-        # conda-forge recipe inserts oldest numpy per platform/runtime
         - numpy
         - pip
+        - setuptools
+        - wheel
       run:
         - python
         - {{ pin_compatible('numpy') }}
         - scipy >=1.1.0
     test:
+      # pip check fails for cvxpy-base due to checking for optional dependencies.
       imports:
         # public interface is defined (see #75) to be the content of
         # https://github.com/cvxpy/cvxpy/blob/master/cvxpy/__init__.py
         - cvxpy
 
 about:
-  home: http://www.cvxpy.org/
+  home: https://www.cvxpy.org/
   license: Apache-2.0
   license_family: Apache
   license_file: LICENSE
@@ -91,7 +91,7 @@ about:
     problems. It allows you to express your problem in a natural way that
     follows the math, rather than in the restrictive standard form required
     by solvers.
-  doc_url: http://www.cvxpy.org/
+  doc_url: https://www.cvxpy.org/
   dev_url: https://github.com/cvxpy/cvxpy
 
 extra:

@@ -10,8 +10,8 @@ source:
   sha256: 89fbc51cca8136a9ef8232a5092a94205f69da5abf7fd05cb7ea7bf1205db7ea
 
 build:
-  number: 0
-  skip: true  # [py<37]
+  number: 1
+  skip: true  # [py<310]
 
 requirements:
   build:
@@ -25,18 +25,22 @@ requirements:
 
 outputs:
   - name: cvxpy
-    build:
-      # Windows missing scs
-      skip: true  # [win]
     requirements:
       host:
         - python
       run:
         - python
         - {{ pin_subpackage('cvxpy-base', exact=True) }}
-        - osqp >=1.0.0
+        - osqp >=0.6.2
         - clarabel >=0.5
-        - scs >=3.2.4
+        - scs >=3.2.4.post1
+        - numpy >=1.22.4
+        - scipy >=1.13.0
+      run_constrained:
+        - cylp >=0.91.5
+        - cuopt-cu12 >=25.5
+        - ortools>=9.7,<9.15
+        - xpress >=9.5
     test:
       source_files:
         - cvxpy/tests
@@ -53,23 +57,9 @@ outputs:
         {% set tests_to_skip = "_not_a_real_test" %}
         # test sets intentionally too small timelimit, and then fails
         {% set tests_to_skip = tests_to_skip + " or test_scipy_mi_time_limit_reached " %}
-        # Doesn't pass on CI, it does pass locally
-        {% set tests_to_skip = tests_to_skip + " or test_pcp_3a " %}  # [osx]
-        {% set tests_to_skip = tests_to_skip + " or test_pcp_3b " %}  # [osx]
-        {% set tests_to_skip = tests_to_skip + " or test_pcp_4a " %}  # [osx]
-        {% set tests_to_skip = tests_to_skip + " or test_pcp_4b " %}  # [osx]
-        {% set tests_to_skip = tests_to_skip + " or test_lp_1 " %}  # [osx]
-        {% set tests_to_skip = tests_to_skip + " or test_lp_2 " %}  # [osx]
-        {% set tests_to_skip = tests_to_skip + " or test_lp_3 " %}  # [osx]
-        {% set tests_to_skip = tests_to_skip + " or test_lp_4 " %}  # [osx]
-        {% set tests_to_skip = tests_to_skip + " or test_lp_5 " %}  # [osx]
-        {% set tests_to_skip = tests_to_skip + " or test_qp_0 " %}  # [osx]
-        {% set tests_to_skip = tests_to_skip + " or test_socp_0 " %}  # [osx]
-        {% set tests_to_skip = tests_to_skip + " or test_socp_1 " %}  # [osx]
-        {% set tests_to_skip = tests_to_skip + " or test_socp_2 " %}  # [osx]
-        {% set tests_to_skip = tests_to_skip + " or test_socp_3ax0 " %}  # [osx]
+        # Tests fail randomly on OSX on CI - cvxpy/tests/* Fatal Python error: Aborted
         - pip check
-        - pytest cvxpy/tests -v -k "not ({{ tests_to_skip }})"
+        - pytest cvxpy/tests -v -k "not ({{ tests_to_skip }})"  # [not osx]
   - name: cvxpy-base
     build:
       script:

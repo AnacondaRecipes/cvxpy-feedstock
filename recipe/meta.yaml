@@ -1,5 +1,5 @@
 {% set name = "cvxpy" %}
-{% set version = "1.7.2" %}
+{% set version = "1.7.3" %}
 
 package:
   name: {{ name }}-split
@@ -7,11 +7,11 @@ package:
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 89fbc51cca8136a9ef8232a5092a94205f69da5abf7fd05cb7ea7bf1205db7ea
+  sha256: 241d364f5962a1d68c4ae8393480766a09326e5771e2286d33a948e1976cbe70
 
 build:
   number: 1
-  skip: true  # [py<310]
+  skip: true  # [py<39]
 
 requirements:
   build:
@@ -31,7 +31,7 @@ outputs:
       run:
         - python
         - {{ pin_subpackage('cvxpy-base', exact=True) }}
-        - osqp >=0.6.2
+        - osqp >=1.0.0
         - clarabel >=0.5
         - scs >=3.2.4.post1
         - numpy >=1.22.4

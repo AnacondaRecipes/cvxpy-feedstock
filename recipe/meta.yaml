@@ -1,5 +1,7 @@
 {% set name = "cvxpy" %}
-{% set version = "1.7.3" %}
+{% set version = "1.8.1" %}
+{% set tests_to_skip = "_not_a_real_test" %}
+{% set tests_to_skip = tests_to_skip + " or test_scipy_mi_time_limit_reached " %}
 
 package:
   name: {{ name }}-split
@@ -7,10 +9,10 @@ package:
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 241d364f5962a1d68c4ae8393480766a09326e5771e2286d33a948e1976cbe70
+  sha256: 3fbdb1f81be7237c58742b1618bb9f809eeacf6c131705e2540b87ecef9cf402
 
 build:
-  number: 1
+  number: 0
   skip: true  # [py<310]
 
 requirements:
@@ -54,9 +56,7 @@ outputs:
         - hypothesis
         - scipy
       commands:
-        {% set tests_to_skip = "_not_a_real_test" %}
         # test sets intentionally too small timelimit, and then fails
-        {% set tests_to_skip = tests_to_skip + " or test_scipy_mi_time_limit_reached " %}
         # Tests fail randomly on OSX on CI - cvxpy/tests/* Fatal Python error: Aborted
         - pip check
         - pytest cvxpy/tests -v -k "not ({{ tests_to_skip }})"  # [not osx]

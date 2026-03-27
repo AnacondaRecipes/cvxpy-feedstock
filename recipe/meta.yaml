@@ -1,5 +1,5 @@
 {% set name = "cvxpy" %}
-{% set version = "1.8.1" %}
+{% set version = "1.8.2" %}
 
 package:
   name: {{ name }}-split
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 3fbdb1f81be7237c58742b1618bb9f809eeacf6c131705e2540b87ecef9cf402
+  sha256: c75489ebf09d1bd21c009b410f4e2fafe5b1704c1e46c45b1346f09e9f925974
 
 build:
   number: 0
@@ -34,7 +34,7 @@ outputs:
         - osqp >=1.0.0
         - clarabel >=0.5
         - scs >=3.2.4.post1
-        - numpy >=1.22.4
+        - numpy >=2.0.0
         - scipy >=1.13.0
         - highspy >=1.11.0
       run_constrained:

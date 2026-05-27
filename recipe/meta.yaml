@@ -80,6 +80,7 @@ outputs:
         - pip
         - python
         - pybind11
+        - pybind11-abi
         - setuptools >=68.1.0
         - numpy >=2.0.0
         - scipy >=1.13.0
